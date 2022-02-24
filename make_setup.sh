@@ -35,29 +35,30 @@ echo
 echo "make_setup.sh: Creating setup script...."
 
 #### Build a set-up script in location
-echo 'echo "*****************************************"' > ${location}/${setup_name}
-echo 'echo "**** Welcome to '${fullName}' ('$shortName') ****"' >> ${location}/${setup_name}
-echo 'echo "*****************************************"'>> ${location}/${setup_name}
-echo 'echo'>> ${location}/${setup_name}
-echo 'echo "Where am I?"'>> ${location}/${setup_name}
-echo 'local='${location} >> ${location}/${setup_name}
-echo 'cd $local;'>> ${location}/${setup_name}
-echo '## cur_setup'>> ${location}/${setup_name}
-echo 'export CURRENT='$location'; echo $CURRENT'>> ${location}/${setup_name}
-echo 'echo'>> ${location}/${setup_name}
-echo 'echo "Loading aliases..."'>> ${location}/${setup_name}
-echo '#### Here are the aliases'>> ${location}/${setup_name}
-echo ''>> ${location}/${setup_name}
-echo 'echo "## List of aliases for '$shortName' (last setup ran)" > '${make_setup_dir}'/list_setup_local_aliases.txt' >> ${location}/${setup_name}
-echo 'alias list_local_alias="cat '${make_setup_dir}'/list_setup_local_aliases.txt"' >> ${location}/${setup_name}
-echo 'echo " - list_local_alias (List local aliases)" >> '${make_setup_dir}'/list_setup_local_aliases.txt' >> ${location}/${setup_name}
-echo ''>> ${location}/${setup_name}
-echo '## Print out aliases' >> ${location}/${setup_name}
-echo 'echo "Here are the aliases..."' >> ${location}/${setup_name}
-echo 'echo' >> ${location}/${setup_name}
-echo 'cat '${make_setup_dir}'/list_setup_local_aliases.txt' >> ${location}/${setup_name}
-echo 'echo'>> ${location}/${setup_name}
-echo ''>> ${location}/${setup_name}
+make_setup_text='#!/bin/bash
+
+echo "*****************************************"
+echo "**** Welcome to '${fullName}' ('$shortName') ****"
+echo "*****************************************"
+
+echo "Where am I?"
+local='${location}'
+cd $local;
+## cur_setup
+export CURRENT='$location'; $CURRENT
+
+#### Aliases
+echo "Loading aliases..."
+echo "## List of aliases for '$shortName' (last setup ran)" > '${make_setup_dir}'/list_setup_local_aliases.txt
+alias list_local_alias="cat '${make_setup_dir}'/list_setup_local_aliases.txt"
+echo " - list_local_alias (List local aliases)" >> '${make_setup_dir}'/list_setup_local_aliases.txt'
+'
+## Print out aliases
+echo "Here are the aliases..."
+cat '${make_setup_dir}'/list_setup_local_aliases.txt
+
+'
+echo "${make_setup_text}" > ${location}/${setup_name}
 
 while true; do
     read -p "make_setup.sh:  Do you want jupter notebook? (yes/no)  " yn_jn
@@ -70,19 +71,21 @@ done
 
 if ${do_jn}
 then
-    echo '' >> ${location}/${setup_name}
-    echo '## Launch JN?' >> ${location}/${setup_name}
-    echo 'jn_cmd="jupyter notebook &"' >> ${location}/${setup_name}
-    echo 'while true; do' >> ${location}/${setup_name}
-    echo '    read -p "'$shortName':  Do you want to start Jupyter Notebook (y/n): " yn' >> ${location}/${setup_name}
-    echo '    case $yn in' >> ${location}/${setup_name}
-    echo '        [Yy]* ) echo "'$shortName': Ok, starting Jupyter..."; eval "${jn_cmd}"; echo "'$shortName': Done"; break;;' >> ${location}/${setup_name}
-    echo '        [Nn]* ) echo "'$shortName': I will take that as a no"; echo; break;;' >> ${location}/${setup_name}
-    echo '        * ) echo "'$shortName': Please answer yes/no!"; echo; continue;;' >> ${location}/${setup_name}
-    echo '    esac' >> ${location}/${setup_name}
-    echo 'done' >> ${location}/${setup_name}
-    echo 'echo' >> ${location}/${setup_name}
-    echo '' >> ${location}/${setup_name}
+    jn_text='
+## Launch JN?
+jn_cmd="jupyter notebook &"
+while true; do
+    read -p "'$shortName':  Do you want to start Jupyter Notebook (y/n): " yn
+    case $yn in
+        [Yy]* ) echo "'$shortName': Ok, starting Jupyter..."; eval "${jn_cmd}"; echo "'$shortName': Done"; break;;
+        [Nn]* ) echo "'$shortName': I will take that as a no"; echo; break;;
+        * ) echo "'$shortName': Please answer yes/no!"; echo; continue;;
+    esac
+done
+echo
+
+'
+    echo "${jn_text}" >> ${location}/${setup_name}
 fi
 echo
 
