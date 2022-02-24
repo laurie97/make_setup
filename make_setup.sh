@@ -6,7 +6,9 @@
 location=`pwd`
 fullName=$1
 shortName="s_"$2
-make_setup_dir=`dirname ${0}`
+## Get path to make setup
+make_setup_path=`realpath ${BASH_SOURCE}`
+make_setup_dir=`dirname ${make_setup_path}`
 
 ## Check details are right
 echo
@@ -15,7 +17,7 @@ while true; do
     read -p "make_setup.sh:  Is this ok? (yes/no/maybe)  " yn
     case $yn in
 	[Yy]* ) echo; echo "  **** Ok let's go! ***"; echo; break;;
-	[Nn]* ) echo "make_setup.sh: I'll take that as a no"; echo; exit;;
+	[Nn]* ) echo "make_setup.sh: I'll take that as a no"; echo; exit 0;;
 	[Mm]* ) echo "make_setup.sh: You can't actually answer 'maybe' to a machine, I can't make decisions for you!"; echo; continue;;
 	* ) echo "make_setup.sh: Please answer yes/no/maybe!"; echo; continue;;
     esac
