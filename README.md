@@ -25,6 +25,7 @@ make_setup creates:
 ### When you want to work on that project
 
 1. Go to terminal (or gitbash)
+1. (Optional) Run `list_setups` to see what setups you have run
 1. Enter the alias created which follows form: `s_<Project Short Name>`
    e.g.
    ```
