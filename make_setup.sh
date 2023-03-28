@@ -25,7 +25,7 @@ while true; do
 echo
 
 ## Name of bash script that will run
-setup_name="nsfg_setup_"$2".sh"
+setup_name="nsfg_setup.sh"
 
 ## Print out what you are doing
 echo "make_setup.sh: Creating alias...." 
@@ -59,6 +59,30 @@ cat '${make_setup_dir}'/list_setup_local_aliases.txt
 
 '
 echo "${make_setup_text}" > ${location}/${setup_name}
+
+
+while true; do
+    read -p "make_setup.sh:  Do you want create a virtual env? (yes/no)  " yn_venv
+    case $yn_venv in
+	[Yy]* ) echo; echo "  **** Ok let's venv! ***"; do_venv=true; echo; break;;
+	[Nn]* ) echo "make_setup.sh: I'll take that as a no"; do_venv=false; echo; break;;
+	* ) echo "make_setup.sh: Please answer yes/no!"; echo; continue;;
+    esac
+done
+
+if ${do_venv}
+then
+    venv_location="venv_"$2
+    echo "Running 'python -m venv ${venv_location}'... This might take a second"
+    python -m venv ${venv_location}
+    venv_text="
+## Load venv
+source ${venv_location}/Scripts/activate
+
+"
+    echo "${venv_text}" >> ${location}/${setup_name}
+fi
+echo
 
 while true; do
     read -p "make_setup.sh:  Do you want jupter notebook? (yes/no)  " yn_jn
